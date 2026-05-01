@@ -1,0 +1,18 @@
+FROM node:20-bookworm
+
+# Install SSH client and Git
+RUN apt-get update && apt-get install -y \
+    openssh-client \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install pnpm (as used in the project)
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# Set working directory
+WORKDIR /app
+
+# Ensure the .ssh directory exists in the container's home
+RUN mkdir -p /home/node/.ssh && chown -R node:node /home/node/.ssh
+
+USER node
